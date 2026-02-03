@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { NavLink } from 'react-router-dom';
 import { Role, User } from '../types';
 import Logo from './Logo';
 
@@ -75,29 +76,33 @@ const Sidebar: React.FC<SidebarProps> = ({
 
             <nav className="space-y-3 pb-10">
               {navItems.map((item) => {
-                const isActive = activeTab === item.id;
                 return (
-                  <button
+                  <NavLink
                     key={item.id}
-                    onClick={() => { setActiveTab(item.id); if (onCloseMobile) onCloseMobile(); }}
-                    className={`w-full flex items-center gap-4 py-3.5 px-6 transition-all duration-300 group relative
+                    to={`/${item.id}`}
+                    onClick={() => { if (onCloseMobile) onCloseMobile(); }}
+                    className={({ isActive }) => `w-full flex items-center gap-4 py-3.5 px-6 transition-all duration-300 group relative
                       ${isActive
                         ? 'bg-teal-500/10 rounded-2xl border border-teal-500/20'
                         : 'text-gray-500 hover:bg-white/40 hover:rounded-2xl'}`}
                   >
-                    <div className={`transition-all duration-300 ${isActive ? 'text-teal-600' : 'opacity-40 group-hover:opacity-100'}`}>
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={isActive ? 2 : 1.5} d={item.icon} />
-                      </svg>
-                    </div>
-                    <span className={`text-[11px] font-black tracking-[0.15em] uppercase transition-all duration-300
-                      ${isActive ? 'text-teal-700' : 'opacity-60 group-hover:opacity-100'}`}>
-                      {item.label}
-                    </span>
-                    {isActive && (
-                      <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 bg-teal-500 rounded-full" />
+                    {({ isActive }) => (
+                      <>
+                        <div className={`transition-all duration-300 ${isActive ? 'text-teal-600' : 'opacity-40 group-hover:opacity-100'}`}>
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={isActive ? 2 : 1.5} d={item.icon} />
+                          </svg>
+                        </div>
+                        <span className={`text-[11px] font-black tracking-[0.15em] uppercase transition-all duration-300
+                          ${isActive ? 'text-teal-700' : 'opacity-60 group-hover:opacity-100'}`}>
+                          {item.label}
+                        </span>
+                        {isActive && (
+                          <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 bg-teal-500 rounded-full" />
+                        )}
+                      </>
                     )}
-                  </button>
+                  </NavLink>
                 );
               })}
             </nav>

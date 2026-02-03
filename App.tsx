@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
+import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { Book, User, BorrowRequest, HistoryRecord, Fine } from './types';
 import Splash from './components/Splash';
 import Login from './components/Login';
@@ -23,12 +24,17 @@ const App: React.FC = () => {
   const [requests, setRequests] = useState<BorrowRequest[]>([]);
   const [history, setHistory] = useState<HistoryRecord[]>([]);
   const [fines, setFines] = useState<Fine[]>([]);
-  const [activeTab, setActiveTab] = useState('dashboard');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     const saved = localStorage.getItem('albayan_theme');
     return (saved as 'light' | 'dark') || 'light';
   });
+
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  // Derive active tab from URL path
+  const activeTab = location.pathname.split('/').filter(Boolean)[0] || 'dashboard';
 
   // Global Status Message
   const [statusMsg, setStatusMsgState] = useState<{ text: string, type: 'success' | 'error' } | null>(null);
@@ -109,8 +115,10 @@ const App: React.FC = () => {
       setCurrentUser(userData);
       localStorage.setItem('albayan_active_session', JSON.stringify(userData));
       await refreshAllData();
+      navigate('/dashboard');
     } catch (err) {
       setCurrentUser(userData);
+      navigate('/dashboard');
     } finally {
       setIsSyncing(false);
     }
@@ -119,16 +127,17 @@ const App: React.FC = () => {
   const handleSwitchPortal = useCallback(() => {
     setCurrentUser(null);
     localStorage.removeItem('albayan_active_session');
-    setActiveTab('dashboard');
+    navigate('/login');
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, []);
+  }, [navigate]);
 
   const handleFullLogout = useCallback(() => {
     setCurrentUser(null);
     setCloudIdentity(null);
     localStorage.removeItem('albayan_active_session');
     localStorage.removeItem('albayan_cloud_identity');
-  }, []);
+    navigate('/login');
+  }, [navigate]);
 
   const handleAddOrUpdateBook = async (book: Book) => {
     await api.saveBook(book);
@@ -297,22 +306,30 @@ const App: React.FC = () => {
 
   if (!currentUser) {
     return (
-      <Login
-        onLogin={handleLogin}
-        onIdentify={handleIdentify}
-        initialIdentity={cloudIdentity}
-        onClearIdentity={handleFullLogout}
-        availableUsers={users}
-      />
+      <Routes>
+        <Route path="/login" element={
+          <Login
+            onLogin={handleLogin}
+            onIdentify={handleIdentify}
+            initialIdentity={cloudIdentity}
+            onClearIdentity={handleFullLogout}
+            availableUsers={users}
+          />
+        } />
+        <Route path="*" element={<Navigate to="/login" replace />} />
+      </Routes>
     );
   }
+
+  const studentsCount = users.filter(u => u.role === 'STUDENT').length;
+  const booksCount = books.reduce((acc, b) => acc + (b.totalCopies || 0), 0);
 
   return (
     <div className="flex flex-col lg:flex-row min-h-screen bg-transparent animate-in fade-in duration-500">
       <Sidebar
         role={currentUser.role}
         activeTab={activeTab}
-        setActiveTab={setActiveTab}
+        setActiveTab={(tab) => navigate(`/${tab}`)}
         onLogout={handleSwitchPortal}
         user={currentUser}
         isMobileOpen={isMobileMenuOpen}
@@ -374,32 +391,34 @@ const App: React.FC = () => {
               </p>
             </header>
 
-            {activeTab === 'about' ? (
-              <About
-                booksCount={books.reduce((acc, b) => acc + (b.totalCopies || 0), 0)}
-                studentsCount={users.filter(u => u.role === 'STUDENT').length}
-              />
-            ) : currentUser.role === 'ADMIN' ? (
-              <AdminDashboard
-                activeTab={activeTab} books={books} users={users} requests={requests} history={history} fines={fines}
-                onAddBook={handleAddOrUpdateBook} onUpdateBook={handleAddOrUpdateBook} onDeleteBook={handleDeleteBook}
-                onBulkAddBooks={handleBulkAddBooks}
-                onAddUser={handleAddOrUpdateUser} onUpdateUser={handleAddOrUpdateUser} onDeleteUser={handleDeleteUser}
-                onBulkAddUsers={handleBulkAddUsers}
-                onHandleRequest={handleRequestAction} onReturnBook={handleReturnBook} onPayFine={handlePayFine}
-                onBorrow={handleBorrowRequest}
-                onIssueBook={handleIssueBook}
-                onClearRequests={handleClearRequests}
-                onClearHistory={handleClearHistory}
-                onClearFines={handleClearFines}
-                globalStatus={{ msg: statusMsg, set: setStatusMsg }}
-              />
-            ) : (
-              <StudentDashboard
-                activeTab={activeTab} books={books} requests={requests} history={history} fines={fines} currentUser={currentUser} onBorrow={handleBorrowRequest}
-                globalStatus={{ msg: statusMsg, set: setStatusMsg }}
-              />
-            )}
+            <Routes>
+              <Route path="/about" element={<About booksCount={booksCount} studentsCount={studentsCount} />} />
+              <Route path="*" element={
+                currentUser.role === 'ADMIN' ? (
+                  <AdminDashboard
+                    activeTab={activeTab} books={books} users={users} requests={requests} history={history} fines={fines}
+                    onAddBook={handleAddOrUpdateBook} onUpdateBook={handleAddOrUpdateBook} onDeleteBook={handleDeleteBook}
+                    onBulkAddBooks={handleBulkAddBooks}
+                    onAddUser={handleAddOrUpdateUser} onUpdateUser={handleAddOrUpdateUser} onDeleteUser={handleDeleteUser}
+                    onBulkAddUsers={handleBulkAddUsers}
+                    onHandleRequest={handleRequestAction} onReturnBook={handleReturnBook} onPayFine={handlePayFine}
+                    onBorrow={handleBorrowRequest}
+                    onIssueBook={handleIssueBook}
+                    onClearRequests={handleClearRequests}
+                    onClearHistory={handleClearHistory}
+                    onClearFines={handleClearFines}
+                    globalStatus={{ msg: statusMsg, set: setStatusMsg }}
+                  />
+                ) : (
+                  <StudentDashboard
+                    activeTab={activeTab === 'dashboard' ? 'dashboard' : activeTab}
+                    books={books} requests={requests} history={history} fines={fines} currentUser={currentUser} onBorrow={handleBorrowRequest}
+                    globalStatus={{ msg: statusMsg, set: setStatusMsg }}
+                  />
+                )
+              } />
+              <Route path="/" element={<Navigate to="/dashboard" replace />} />
+            </Routes>
           </div>
         </div>
       </main>
