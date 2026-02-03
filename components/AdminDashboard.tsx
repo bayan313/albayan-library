@@ -29,6 +29,7 @@ interface AdminDashboardProps {
     onPayFine: (id: string) => void;
     onBorrow: (bookId: string) => void;
     onIssueBook: (bookId: string, userId: string) => void;
+    onRenew: (recordId: string) => void;
     onClearRequests: () => Promise<void>;
     onClearHistory: () => Promise<void>;
     onClearFines: () => Promise<void>;
@@ -39,7 +40,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
     activeTab, books, users, requests, history, fines,
     onAddBook, onUpdateBook, onDeleteBook, onBulkAddBooks,
     onAddUser, onUpdateUser, onDeleteUser, onBulkAddUsers,
-    onHandleRequest, onReturnBook, onPayFine, onBorrow, onIssueBook,
+    onHandleRequest, onReturnBook, onPayFine, onBorrow, onIssueBook, onRenew,
     onClearRequests, onClearHistory, onClearFines,
     globalStatus
 }) => {
@@ -414,17 +415,37 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                 </div>
                             </div>
                             <div className="divide-y divide-white/5 max-h-[450px] overflow-y-auto no-scrollbar">
-                                {activeCirculation.map(h => (
-                                    <div key={h.id} className="p-6 flex items-center justify-between hover:bg-white/5 transition-colors">
-                                        <div className="overflow-hidden pr-4">
-                                            <p className="text-sm font-bold truncate tracking-tight">{h.bookTitle}</p>
-                                            <p className="text-[10px] opacity-40 font-black uppercase tracking-widest mt-1 truncate">By {h.userName}</p>
+                                {activeCirculation.map(h => {
+                                    const isOverdue = Date.now() > h.dueDate;
+                                    const daysLeft = Math.ceil((h.dueDate - Date.now()) / (1000 * 60 * 60 * 24));
+
+                                    return (
+                                        <div key={h.id} className="p-6 flex items-center justify-between hover:bg-white/5 transition-colors">
+                                            <div className="overflow-hidden pr-4">
+                                                <p className="text-sm font-bold truncate tracking-tight">{h.bookTitle}</p>
+                                                <div className="flex items-center gap-3 mt-1">
+                                                    <p className="text-[10px] opacity-40 font-black uppercase tracking-widest leading-none">By {h.userName}</p>
+                                                    <span className={`text-[9px] font-black uppercase tracking-tighter px-2 py-0.5 rounded-md border ${isOverdue ? 'bg-rose-500/10 text-rose-500 border-rose-500/20' : 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20'}`}>
+                                                        {isOverdue ? `Overdue ${Math.abs(daysLeft)}d` : `Due ${daysLeft}d`}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div className="flex gap-2">
+                                                <button
+                                                    onClick={() => onRenew(h.id)}
+                                                    disabled={(h.renewals || 0) >= 2}
+                                                    className="glass-button p-2 text-gray-400 hover:text-teal-600 disabled:opacity-20"
+                                                    title="Quick Renew (Admin)"
+                                                >
+                                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+                                                </button>
+                                                <button onClick={() => { setSelectedReturn(h); setShowFineModal(true); setHasIssue(false); setFineAmount(0); setFineReason(''); }} className="glass-button p-2 text-teal-600 hover:text-teal-700">
+                                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 15l-3-3m0 0l3-3m-3 3h8M3 12a9 9 0 1118 0 9 9 0 01-18 0z" /></svg>
+                                                </button>
+                                            </div>
                                         </div>
-                                        <button onClick={() => { setSelectedReturn(h); setShowFineModal(true); setHasIssue(false); setFineAmount(0); setFineReason(''); }} className="glass-button p-2.5 text-teal-600 hover:text-teal-700">
-                                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 15l-3-3m0 0l3-3m-3 3h8M3 12a9 9 0 1118 0 9 9 0 01-18 0z" /></svg>
-                                        </button>
-                                    </div>
-                                ))}
+                                    );
+                                })}
                                 {activeCirculation.length === 0 && <div className="p-20 text-center text-gray-300 text-xs italic tracking-widest uppercase font-black opacity-40">All items returned</div>}
                             </div>
                         </div>
@@ -532,7 +553,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             {activeTab === 'history' && (
                                 <>
                                     <thead className="glass-panel border-b border-zinc-500/10 text-zinc-500 text-[10px] font-bold uppercase tracking-wider">
-                                        <tr><th className="px-6 py-4">Borrowed</th><th className="px-6 py-4">User</th><th className="px-6 py-4">Book</th><th className="px-6 py-4">Issued By</th><th className="px-6 py-4">Returned</th><th className="px-6 py-4">Status</th></tr>
+                                        <tr><th className="px-6 py-4">Borrowed</th><th className="px-6 py-4">User</th><th className="px-6 py-4">Book</th><th className="px-6 py-4">Due Date</th><th className="px-6 py-4">Returned</th><th className="px-6 py-4">Status</th></tr>
                                     </thead>
                                     <tbody className="divide-y divide-white/5">
                                         {history.map(record => (
@@ -540,7 +561,9 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                                 <td className="px-6 py-4 opacity-40 font-mono text-[10px]">{new Date(record.borrowDate).toLocaleDateString()}</td>
                                                 <td className="px-6 py-4 font-medium">{record.userName}</td>
                                                 <td className="px-6 py-4 opacity-60 text-xs">{record.bookTitle}</td>
-                                                <td className="px-6 py-4 opacity-40 text-xs">{record.issuedBy || '---'}</td>
+                                                <td className={`px-6 py-4 font-mono text-[10px] ${!record.returnDate && Date.now() > record.dueDate ? 'text-rose-500 font-bold' : 'opacity-40'}`}>
+                                                    {record.dueDate ? new Date(record.dueDate).toLocaleDateString() : '---'}
+                                                </td>
                                                 <td className="px-6 py-4 text-gray-400 font-mono text-[10px]">{record.returnDate ? new Date(record.returnDate).toLocaleDateString() : '---'}</td>
                                                 <td className="px-6 py-4"><span className={`px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider border ${record.returnDate ? 'bg-gray-50 text-gray-400 border-gray-100' : 'accent-blue border-blue-100'}`}>{record.returnDate ? 'Returned' : 'In Use'}</span></td>
                                             </tr>

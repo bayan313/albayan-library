@@ -140,7 +140,7 @@ class ApiService {
   async deleteAllRequests(): Promise<void> { await this.request<void>('/requests', { method: 'DELETE' }); }
   async getHistory(): Promise<HistoryRecord[]> { return this.request<HistoryRecord[]>('/history'); }
   async addHistoryRecord(record: HistoryRecord): Promise<void> { await this.request<void>('/history', { method: 'POST', body: JSON.stringify(record) }); }
-  async updateHistoryRecord(record: HistoryRecord): Promise<void> { await this.request<void>(`/history/${record.id}`, { method: 'PATCH', body: JSON.stringify({ returnDate: record.returnDate }) }); }
+  async updateHistoryRecord(id: string, updates: Partial<HistoryRecord>): Promise<void> { await this.request<void>(`/history/${id}`, { method: 'PATCH', body: JSON.stringify(updates) }); }
   async deleteAllHistory(): Promise<void> { await this.request<void>('/history', { method: 'DELETE' }); }
   async getFines(): Promise<Fine[]> { return this.request<Fine[]>('/fines'); }
   async createFine(fine: Fine): Promise<Fine> { return this.request<Fine>('/fines', { method: 'POST', body: JSON.stringify(fine) }); }

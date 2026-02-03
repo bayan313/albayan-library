@@ -189,6 +189,7 @@ const App: React.FC = () => {
             userId: req.userId,
             userName: req.userName,
             borrowDate: Date.now(),
+            dueDate: Date.now() + (7 * 24 * 60 * 60 * 1000), // 7 Days
             issuedBy: currentUser?.name || 'Admin'
           });
         }
@@ -214,17 +215,30 @@ const App: React.FC = () => {
       await api.saveBook(updatedBook);
       const record = history.find(h => h.bookId === bookId && h.userId === userId && !h.returnDate);
       if (record) {
-        await api.updateHistoryRecord({ ...record, id: record.id, returnDate: Date.now() });
+        const returnDate = Date.now();
+        await api.updateHistoryRecord(record.id, { returnDate });
 
-        if (fine && fine.amount > 0) {
+        // Auto-calculate fine if not provided manually but is overdue
+        let finalFine = fine;
+        if (!finalFine && returnDate > record.dueDate) {
+          const overdueDays = Math.floor((returnDate - record.dueDate) / (1000 * 60 * 60 * 24));
+          if (overdueDays > 0) {
+            finalFine = {
+              amount: overdueDays * 5, // 5 per day
+              reason: `Overdue by ${overdueDays} days`
+            };
+          }
+        }
+
+        if (finalFine && finalFine.amount > 0) {
           await api.createFine({
             id: `F${Date.now()}`,
             userId,
             userName: record.userName,
             bookId,
             bookTitle: record.bookTitle,
-            amount: fine.amount,
-            reason: fine.reason,
+            amount: finalFine.amount,
+            reason: finalFine.reason,
             status: 'PENDING',
             timestamp: Date.now()
           });
@@ -256,6 +270,7 @@ const App: React.FC = () => {
         userId: user.id,
         userName: user.name,
         borrowDate: Date.now(),
+        dueDate: Date.now() + (7 * 24 * 60 * 60 * 1000), // 7 Days
         issuedBy: currentUser?.name || 'Admin'
       });
 
@@ -263,6 +278,28 @@ const App: React.FC = () => {
       await refreshAllData();
     } catch (err: any) {
       setStatusMsg("Issuance failed: " + err.message, 'error');
+    }
+  };
+
+  const handleRenewBook = async (recordId: string) => {
+    const record = history.find(h => h.id === recordId);
+    if (!record) return;
+
+    if ((record.renewals || 0) >= 2) {
+      setStatusMsg("Maximum renewal limit reached", 'error');
+      return;
+    }
+
+    try {
+      const newDueDate = (record.dueDate || (record.borrowDate + 7 * 24 * 60 * 60 * 1000)) + (7 * 24 * 60 * 60 * 1000);
+      await api.updateHistoryRecord(record.id, {
+        dueDate: newDueDate,
+        renewals: (record.renewals || 0) + 1
+      });
+      setStatusMsg("Book renewed for 7 more days");
+      await refreshAllData();
+    } catch (err: any) {
+      setStatusMsg("Renewal failed: " + err.message, 'error');
     }
   };
 
@@ -404,6 +441,7 @@ const App: React.FC = () => {
                     onHandleRequest={handleRequestAction} onReturnBook={handleReturnBook} onPayFine={handlePayFine}
                     onBorrow={handleBorrowRequest}
                     onIssueBook={handleIssueBook}
+                    onRenew={handleRenewBook}
                     onClearRequests={handleClearRequests}
                     onClearHistory={handleClearHistory}
                     onClearFines={handleClearFines}
@@ -412,7 +450,9 @@ const App: React.FC = () => {
                 ) : (
                   <StudentDashboard
                     activeTab={activeTab === 'dashboard' ? 'dashboard' : activeTab}
-                    books={books} requests={requests} history={history} fines={fines} currentUser={currentUser} onBorrow={handleBorrowRequest}
+                    books={books} requests={requests} history={history} fines={fines} currentUser={currentUser}
+                    onBorrow={handleBorrowRequest}
+                    onRenew={handleRenewBook}
                     globalStatus={{ msg: statusMsg, set: setStatusMsg }}
                   />
                 )

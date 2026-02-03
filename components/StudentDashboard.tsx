@@ -31,11 +31,12 @@ interface StudentDashboardProps {
     fines: Fine[];
     currentUser: User;
     onBorrow: (bookId: string) => void;
+    onRenew: (recordId: string) => void;
     globalStatus: { msg: { text: string, type: 'success' | 'error' } | null, set: (text: string, type?: 'success' | 'error') => void };
 }
 
 const StudentDashboard: React.FC<StudentDashboardProps> = ({
-    activeTab, books, requests, history, fines, currentUser, onBorrow, globalStatus
+    activeTab, books, requests, history, fines, currentUser, onBorrow, onRenew, globalStatus
 }) => {
     const [search, setSearch] = useState('');
     const [filter, setFilter] = useState('All');
@@ -138,20 +139,37 @@ const StudentDashboard: React.FC<StudentDashboardProps> = ({
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                                     {myActiveBorrows.map(h => {
                                         const book = books.find(b => b.id === h.bookId);
+                                        const now = Date.now();
+                                        const isOverdue = now > h.dueDate;
+                                        const daysLeft = Math.ceil((h.dueDate - now) / (1000 * 60 * 60 * 24));
+
                                         return (
-                                            <div key={h.id} className="glass-card p-6 rounded-[2.2rem] flex gap-5 hover:glass-card-hover transition-all cursor-pointer group border-white/20" onClick={() => book && setSelectedBook(book)}>
-                                                <div className="w-20 h-28 bg-white/5 rounded-2xl overflow-hidden shrink-0 border border-white/10 shadow-sm relative">
-                                                    <img src={book?.coverUrl} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt={h.bookTitle} />
-                                                </div>
-                                                <div className="flex flex-col py-1 flex-1 relative">
-                                                    <h4 className="font-black text-sm leading-snug line-clamp-2 uppercase tracking-tight">{h.bookTitle}</h4>
-                                                    <p className="text-[9px] mt-2 uppercase tracking-widest font-black opacity-40">Issued: {new Date(h.borrowDate).toLocaleDateString()}</p>
-                                                    <div className="mt-auto flex items-center justify-between">
-                                                        <span className="text-[8px] text-teal-600 font-black uppercase tracking-[0.2em] bg-teal-500/10 px-3 py-1.5 rounded-full border border-teal-500/20 shadow-[0_2px_8px_rgba(20,184,166,0.15)]">In Care</span>
-                                                        <div className="w-9 h-9 rounded-xl glass-button flex items-center justify-center text-gray-300 group-hover:text-teal-600 transition-all shadow-sm">
-                                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253" /></svg>
+                                            <div key={h.id} className="glass-card p-6 rounded-[2.2rem] flex flex-col gap-5 hover:glass-card-hover transition-all cursor-pointer group border-white/20" onClick={() => book && setSelectedBook(book)}>
+                                                <div className="flex gap-5">
+                                                    <div className="w-20 h-28 bg-white/5 rounded-2xl overflow-hidden shrink-0 border border-white/10 shadow-sm relative">
+                                                        <img src={book?.coverUrl} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt={h.bookTitle} />
+                                                    </div>
+                                                    <div className="flex flex-col py-1 flex-1 relative">
+                                                        <h4 className="font-black text-sm leading-snug line-clamp-2 uppercase tracking-tight">{h.bookTitle}</h4>
+                                                        <p className="text-[9px] mt-2 uppercase tracking-widest font-black opacity-30">Issued: {new Date(h.borrowDate).toLocaleDateString()}</p>
+                                                        <div className="mt-auto">
+                                                            <p className={`text-[10px] font-black uppercase tracking-widest ${isOverdue ? 'text-rose-600' : 'text-emerald-600'}`}>
+                                                                {isOverdue ? `Overdue by ${Math.abs(daysLeft)} days` : `Due in ${daysLeft} days`}
+                                                            </p>
                                                         </div>
                                                     </div>
+                                                </div>
+                                                <div className="flex items-center justify-between pt-2 border-t border-white/5">
+                                                    <span className="text-[8px] text-teal-600 font-black uppercase tracking-[0.2em] bg-teal-500/10 px-3 py-1.5 rounded-full border border-teal-500/20 shadow-sm">
+                                                        {h.renewals ? `Renewed ${h.renewals}x` : 'Original Issuance'}
+                                                    </span>
+                                                    <button
+                                                        onClick={(e) => { e.stopPropagation(); onRenew(h.id); }}
+                                                        disabled={(h.renewals || 0) >= 2}
+                                                        className="glass-button px-5 py-2 rounded-xl text-[9px] font-black uppercase tracking-[0.2em] hover:text-teal-600 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                                                    >
+                                                        Renew
+                                                    </button>
                                                 </div>
                                             </div>
                                         );
@@ -348,7 +366,7 @@ const StudentDashboard: React.FC<StudentDashboardProps> = ({
                                 <tr className="glass-panel border-b border-white/5 text-gray-400 text-[10px] font-black uppercase tracking-[0.2em]">
                                     <th className="px-8 py-5">Borrowed</th>
                                     <th className="px-8 py-5">Resource</th>
-                                    <th className="px-8 py-5">Issued By</th>
+                                    <th className="px-8 py-5">Due Date</th>
                                     <th className="px-8 py-5">Returned</th>
                                     <th className="px-8 py-5">Status</th>
                                 </tr>
@@ -358,7 +376,9 @@ const StudentDashboard: React.FC<StudentDashboardProps> = ({
                                     <tr key={record.id} className="hover:bg-white/5 transition-all zebra-row group">
                                         <td className="px-8 py-5 opacity-40 font-mono text-[10px] uppercase tracking-widest">{new Date(record.borrowDate).toLocaleDateString()}</td>
                                         <td className="px-8 py-5 font-black tracking-tight">{record.bookTitle}</td>
-                                        <td className="px-8 py-5 opacity-40 font-bold text-[10px] uppercase tracking-widest">{record.issuedBy || '---'}</td>
+                                        <td className={`px-8 py-5 font-mono text-[10px] uppercase tracking-widest ${!record.returnDate && Date.now() > record.dueDate ? 'text-rose-500 font-black' : 'opacity-40'}`}>
+                                            {record.dueDate ? new Date(record.dueDate).toLocaleDateString() : '---'}
+                                        </td>
                                         <td className="px-8 py-5 opacity-20 font-mono text-[10px] uppercase tracking-widest">{record.returnDate ? new Date(record.returnDate).toLocaleDateString() : '---'}</td>
                                         <td className="px-8 py-5">
                                             <span className={`px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest border ${record.returnDate ? 'bg-gray-100/50 text-gray-400 border-gray-200' : 'bg-teal-500/10 text-teal-600 border-teal-500/20'}`}>

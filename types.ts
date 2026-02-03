@@ -42,8 +42,10 @@ export interface HistoryRecord {
   userId: string;
   userName: string;
   borrowDate: number;
+  dueDate: number;
   returnDate?: number;
   issuedBy?: string;
+  renewals?: number;
 }
 
 export type FineStatus = 'PENDING' | 'PAID';
