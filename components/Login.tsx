@@ -71,8 +71,8 @@ const Login: React.FC<LoginProps> = ({ onLogin, onIdentify, initialIdentity, onC
         list.push({ id: storedAdminPass, name: 'Master Admin', role: 'ADMIN', class: 'System' });
       }
     } else {
-      // Library Portal flow: show ONLY Students and Usthads (Hide Admins)
-      list = list.filter(u => u.role !== 'ADMIN');
+      // Library Portal flow: show all users including Admins
+      // No filter needed
     }
 
     return list.filter(u =>

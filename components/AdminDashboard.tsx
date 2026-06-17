@@ -108,7 +108,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
     });
 
     const filteredUsers = users.filter(u =>
-        (filter === 'All' ? u.role !== 'ADMIN' : u.role === filter) &&
+        (filter === 'All' ? true : u.role === filter) &&
         (u.name.toLowerCase().includes(search.toLowerCase()) ||
             u.id.toLowerCase().includes(search.toLowerCase()) ||
             u.class?.toLowerCase().includes(search.toLowerCase()))
@@ -722,7 +722,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                             />
                                             {issueSearch && (
                                                 <div className="absolute top-full left-0 right-0 mt-3 glass-panel rounded-2xl shadow-2xl z-[100] max-h-60 overflow-y-auto no-scrollbar border-white/80">
-                                                    {users.filter(u => u.role !== 'ADMIN' && (u.name.toLowerCase().includes(issueSearch.toLowerCase()) || u.id.toLowerCase().includes(issueSearch.toLowerCase()))).map(u => (
+                                                    {users.filter(u => (u.name.toLowerCase().includes(issueSearch.toLowerCase()) || u.id.toLowerCase().includes(issueSearch.toLowerCase()))).map(u => (
                                                         <button
                                                             key={u.id}
                                                             onClick={() => { setIssuingToUserId(u.id); setIssueSearch(u.name); }}
