@@ -364,7 +364,7 @@ const App: React.FC = () => {
   return (
     <div className="flex flex-col lg:flex-row min-h-screen bg-transparent animate-in fade-in duration-500">
       <Sidebar
-        role={currentUser.role}
+        role={currentUser.portalMode || currentUser.role}
         activeTab={activeTab}
         setActiveTab={(tab) => navigate(`/${tab}`)}
         onLogout={handleSwitchPortal}
@@ -431,7 +431,7 @@ const App: React.FC = () => {
             <Routes>
               <Route path="/about" element={<About booksCount={booksCount} studentsCount={studentsCount} />} />
               <Route path="*" element={
-                currentUser.role === 'ADMIN' ? (
+                currentUser.portalMode === 'ADMIN' ? (
                   <AdminDashboard
                     activeTab={activeTab} books={books} users={users} requests={requests} history={history} fines={fines}
                     onAddBook={handleAddOrUpdateBook} onUpdateBook={handleAddOrUpdateBook} onDeleteBook={handleDeleteBook}

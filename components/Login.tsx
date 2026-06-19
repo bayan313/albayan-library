@@ -293,7 +293,7 @@ const Login: React.FC<LoginProps> = ({ onLogin, onIdentify, initialIdentity, onC
                   return (
                   <button
                     key={user.id}
-                    onClick={() => onLogin(user)}
+                    onClick={() => onLogin({ ...user, portalMode: selectedRole })}
                     className="w-full flex items-center gap-8 p-10 hover:bg-white/5 transition-all text-left group active:scale-[0.99] border-b border-white/5 last:border-0"
                   >
                     <div className="w-16 h-16 rounded-[1.8rem] bg-white/10 group-hover:scale-110 transition-all flex items-center justify-center text-gray-400 group-hover:text-teal-600 shadow-sm border border-white/10 overflow-hidden shrink-0">

@@ -7,6 +7,7 @@ export interface User {
   role: Role;
   class?: string;
   avatarUrl?: string;
+  portalMode?: Role; // The role selected during login
 }
 
 export interface Book {
