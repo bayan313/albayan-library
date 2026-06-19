@@ -288,7 +288,9 @@ const Login: React.FC<LoginProps> = ({ onLogin, onIdentify, initialIdentity, onC
           <div className="flex-1 overflow-y-auto glass-card rounded-[3.5rem] overflow-hidden no-scrollbar border-white/20 shadow-[0_32px_128px_rgba(0,0,0,0.05)]">
             {filteredUsers.length > 0 ? (
               <div className="divide-y divide-white/5">
-                {filteredUsers.map(user => (
+                {filteredUsers.map(user => {
+                  const displayRole = (user.role === 'ADMIN' && selectedRole !== 'ADMIN') ? 'STUDENT' : user.role;
+                  return (
                   <button
                     key={user.id}
                     onClick={() => onLogin(user)}
@@ -300,8 +302,8 @@ const Login: React.FC<LoginProps> = ({ onLogin, onIdentify, initialIdentity, onC
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-5">
                         <p className="text-xl font-black group-hover:text-teal-600 transition-colors uppercase tracking-tight leading-none">{user.name}</p>
-                        <span className={`px-3 py-1.5 rounded-xl text-[8px] font-black uppercase tracking-[0.2em] border shadow-sm ${user.role === 'ADMIN' ? 'bg-purple-500/10 text-purple-600 border-purple-500/20' : user.role === 'USTHAD' ? 'bg-amber-500/10 text-amber-600 border-amber-500/20' : 'bg-teal-500/10 text-teal-600 border-teal-500/20'}`}>
-                          {user.role}
+                        <span className={`px-3 py-1.5 rounded-xl text-[8px] font-black uppercase tracking-[0.2em] border shadow-sm ${displayRole === 'ADMIN' ? 'bg-purple-500/10 text-purple-600 border-purple-500/20' : displayRole === 'USTHAD' ? 'bg-amber-500/10 text-amber-600 border-amber-500/20' : 'bg-teal-500/10 text-teal-600 border-teal-500/20'}`}>
+                          {displayRole}
                         </span>
                       </div>
                       <p className="text-[10px] text-gray-400 font-bold uppercase tracking-[0.25em] mt-3 leading-none opacity-60">{user.id === storedAdminPass ? 'PRIMARY SYSTEM NODE' : `NODE ID: ${user.id}`} • {user.class || 'General'}</p>
@@ -312,7 +314,8 @@ const Login: React.FC<LoginProps> = ({ onLogin, onIdentify, initialIdentity, onC
                       </div>
                     </div>
                   </button>
-                ))}
+                  );
+                })}
               </div>
             ) : (
               <div className="p-32 text-center">
