@@ -239,7 +239,7 @@ const StudentDashboard: React.FC<StudentDashboardProps> = ({
                         </button>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8">
                         {filteredBooks.map(book => {
                             const isTaken = book.availableCopies === 0;
                             const hasRequested = requests.some(r => r.userId === currentUser.id && r.bookId === book.id && r.status === 'PENDING');
@@ -259,8 +259,8 @@ const StudentDashboard: React.FC<StudentDashboardProps> = ({
                                             <img src={book.coverUrl} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt={book.title} />
                                             <div className="absolute inset-0 bg-gradient-to-t from-[#0f172a] via-transparent to-transparent pointer-events-none opacity-80 group-hover:opacity-50 transition-opacity"></div>
                                         </div>
-                                        <div className="absolute top-4 right-8 w-8 h-12 bg-teal-500/90 backdrop-blur-md rounded-b-xl flex items-end justify-center pb-2 shadow-[0_4px_12px_rgba(20,184,166,0.4)] z-10 transform origin-top rotate-6 group-hover:rotate-0 transition-transform border border-white/20">
-                                            <span className="text-[7px] font-black text-white uppercase -rotate-90 origin-center whitespace-nowrap tracking-[0.2em]">{book.id}</span>
+                                        <div className="absolute top-4 right-6 w-9 h-16 bg-teal-500/90 backdrop-blur-md rounded-b-xl flex items-end justify-center pb-3 shadow-[0_4px_12px_rgba(20,184,166,0.4)] z-10 transform origin-top rotate-6 group-hover:rotate-0 transition-transform border border-white/20">
+                                            <span className="text-[10px] font-black text-white uppercase -rotate-90 origin-center whitespace-nowrap tracking-[0.2em]">{book.id}</span>
                                         </div>
                                     </div>
                                     {/* Bottom Content Section */}
