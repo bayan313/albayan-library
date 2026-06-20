@@ -55,6 +55,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
     // Return Search state
     const [returnSearch, setReturnSearch] = useState('');
+    const [historyFilter, setHistoryFilter] = useState('All');
 
     // Password Change State
     const [showPassModal, setShowPassModal] = useState(false);
@@ -557,11 +558,20 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             )}
                             {activeTab === 'history' && (
                                 <>
+                                    <div className="glass-panel border-b border-zinc-500/10 p-4 flex gap-4">
+                                        <button onClick={() => setHistoryFilter('All')} className={`px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-[0.2em] transition-all ${historyFilter === 'All' ? 'bg-teal-500/20 text-teal-500 border border-teal-500/20' : 'text-gray-400 hover:bg-white/5 border border-transparent'}`}>All</button>
+                                        <button onClick={() => setHistoryFilter('Returned')} className={`px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-[0.2em] transition-all ${historyFilter === 'Returned' ? 'bg-teal-500/20 text-teal-500 border border-teal-500/20' : 'text-gray-400 hover:bg-white/5 border border-transparent'}`}>Returned</button>
+                                        <button onClick={() => setHistoryFilter('In Use')} className={`px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-[0.2em] transition-all ${historyFilter === 'In Use' ? 'bg-teal-500/20 text-teal-500 border border-teal-500/20' : 'text-gray-400 hover:bg-white/5 border border-transparent'}`}>In Use</button>
+                                    </div>
                                     <thead className="glass-panel border-b border-zinc-500/10 text-zinc-500 text-[10px] font-bold uppercase tracking-wider">
                                         <tr><th className="px-6 py-4">Borrowed</th><th className="px-6 py-4">User</th><th className="px-6 py-4">Book</th><th className="px-6 py-4">Due Date</th><th className="px-6 py-4">Returned</th><th className="px-6 py-4">Status</th></tr>
                                     </thead>
                                     <tbody className="divide-y divide-white/5">
-                                        {history.map(record => (
+                                        {history.filter(record => {
+                                            if (historyFilter === 'Returned') return !!record.returnDate;
+                                            if (historyFilter === 'In Use') return !record.returnDate;
+                                            return true;
+                                        }).map(record => (
                                             <tr key={record.id} className="hover:bg-white/5 transition-all zebra-row">
                                                 <td className="px-6 py-4 opacity-40 font-mono text-[10px]">{new Date(record.borrowDate).toLocaleDateString()}</td>
                                                 <td className="px-6 py-4 font-medium">{record.userName}</td>
