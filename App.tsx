@@ -27,7 +27,7 @@ const App: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     const saved = localStorage.getItem('albayan_theme');
-    return (saved as 'light' | 'dark') || 'light';
+    return (saved as 'light' | 'dark') || 'dark';
   });
 
   const location = useLocation();

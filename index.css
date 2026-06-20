@@ -53,8 +53,8 @@
     background-position: center;
     background-attachment: fixed;
     background-repeat: no-repeat;
-    filter: blur(16px) brightness(1.5);
-    transform: scale(1.1);
+    filter: blur(2px) brightness(0.65) contrast(1.1);
+    transform: scale(1.05);
     /* Prevent blurred edges */
     z-index: -1;
     pointer-events: none;
@@ -62,7 +62,7 @@
   }
 
   .dark body::before {
-    filter: blur(16px) brightness(0.3) contrast(1.2);
+    filter: blur(2px) brightness(0.22) contrast(1.25);
   }
 
   /* Smart Dark Mode Overrides */
