@@ -260,7 +260,7 @@ const StudentDashboard: React.FC<StudentDashboardProps> = ({
                                             <div className="absolute inset-0 bg-gradient-to-t from-[#0f172a] via-transparent to-transparent pointer-events-none opacity-80 group-hover:opacity-50 transition-opacity"></div>
                                         </div>
                                         <div className="absolute top-4 right-6 w-9 h-16 bg-teal-500/90 backdrop-blur-md rounded-b-xl flex items-end justify-center pb-3 shadow-[0_4px_12px_rgba(20,184,166,0.4)] z-10 transform origin-top rotate-6 group-hover:rotate-0 transition-transform border border-white/20">
-                                            <span className="text-[10px] font-black text-white uppercase -rotate-90 origin-center whitespace-nowrap tracking-[0.2em]">{book.id}</span>
+                                            <span className="text-[15px] font-black text-white uppercase -rotate-90 origin-center whitespace-nowrap tracking-[0.2em]">{book.id}</span>
                                         </div>
                                     </div>
                                     {/* Bottom Content Section */}
