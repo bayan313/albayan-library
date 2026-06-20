@@ -254,26 +254,22 @@ const StudentDashboard: React.FC<StudentDashboardProps> = ({
                             return (
                                 <div key={book.id} className="glass-card rounded-3xl overflow-hidden flex flex-col group hover:-translate-y-2 hover:shadow-2xl transition-all duration-300 cursor-pointer border-white/10 bg-[#1e293b]/80" onClick={() => setSelectedBook(book)}>
                                     {/* Top Image Section */}
-                                    <div className="h-64 relative overflow-hidden bg-zinc-900/50">
-                                        <img src={book.coverUrl} className="w-full h-full object-contain p-4 group-hover:scale-105 transition-transform duration-700 drop-shadow-2xl" alt={book.title} />
-                                        <div className="absolute top-0 right-6 w-8 h-12 bg-teal-500/80 backdrop-blur-md rounded-b-md flex items-end justify-center pb-2 shadow-lg z-10 transform origin-top rotate-12 group-hover:rotate-0 transition-transform">
-                                            <span className="text-[7px] font-black text-white uppercase -rotate-90 origin-center whitespace-nowrap tracking-widest">{book.category}</span>
+                                    <div className="h-64 relative p-4 pb-8">
+                                        <div className="w-full h-full rounded-[1.5rem] overflow-hidden relative shadow-[0_8px_30px_rgba(0,0,0,0.5)] border border-white/10 group-hover:border-teal-500/40 transition-colors duration-500">
+                                            <img src={book.coverUrl} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt={book.title} />
+                                            <div className="absolute inset-0 bg-gradient-to-t from-[#0f172a] via-transparent to-transparent pointer-events-none opacity-80 group-hover:opacity-50 transition-opacity"></div>
                                         </div>
-                                        <div className="absolute inset-0 bg-gradient-to-t from-[#1e293b]/90 via-transparent to-transparent pointer-events-none"></div>
+                                        <div className="absolute top-4 right-8 w-8 h-12 bg-teal-500/90 backdrop-blur-md rounded-b-xl flex items-end justify-center pb-2 shadow-[0_4px_12px_rgba(20,184,166,0.4)] z-10 transform origin-top rotate-6 group-hover:rotate-0 transition-transform border border-white/20">
+                                            <span className="text-[7px] font-black text-white uppercase -rotate-90 origin-center whitespace-nowrap tracking-[0.2em]">{book.id}</span>
+                                        </div>
                                     </div>
                                     {/* Bottom Content Section */}
-                                    <div className="p-6 flex flex-col flex-1 relative z-10 -mt-6 rounded-t-3xl bg-[#1e293b]/40 backdrop-blur-sm border-t border-white/5">
+                                    <div className="px-6 pb-6 flex flex-col flex-1 relative z-10 -mt-8 rounded-t-[2rem] bg-[#1e293b]/80 backdrop-blur-xl border-t border-white/10 shadow-[0_-8px_30px_rgba(0,0,0,0.3)] pt-6">
                                         <h4 className="font-black text-[15px] leading-tight uppercase tracking-tight text-white mb-1 line-clamp-2">{highlightText(book.title, search)}</h4>
                                         <p className="text-[10px] font-bold text-gray-400 mb-3 line-clamp-1">Author {highlightText(book.author, search)}</p>
                                         
                                         <div className="flex items-center gap-2 mb-4">
-                                            <div className="flex items-center text-teal-400 gap-0.5">
-                                                {[...Array(4)].map((_, i) => (
-                                                    <svg key={i} className="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
-                                                ))}
-                                                <svg className="w-3.5 h-3.5 fill-current opacity-40" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
-                                            </div>
-                                            <span className="text-[10px] text-gray-300 font-bold">4.5/5</span>
+                                            <span className="text-[9px] text-teal-300 font-black tracking-[0.2em] uppercase bg-teal-500/10 px-3 py-1.5 rounded-lg border border-teal-500/20 shadow-sm">{book.category}</span>
                                         </div>
 
                                         <p className={`text-xs font-black uppercase tracking-widest mb-6 ${isTaken ? 'text-amber-500' : 'text-teal-400'}`}>
