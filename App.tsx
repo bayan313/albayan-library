@@ -361,6 +361,24 @@ const App: React.FC = () => {
   const studentsCount = users.filter(u => u.role === 'STUDENT').length;
   const booksCount = books.reduce((acc, b) => acc + (b.totalCopies || 0), 0);
 
+  const calculateQuickStats = () => {
+    if (!currentUser) return { booksBorrowed: 0, dueSoon: 0, reservations: 0, fineDue: 0 };
+    const isAdmin = currentUser.portalMode === 'ADMIN' || (currentUser.role === 'ADMIN' && currentUser.portalMode !== 'STUDENT');
+    if (isAdmin) {
+      const booksBorrowed = history.filter(h => !h.returnDate).length;
+      const dueSoon = history.filter(h => !h.returnDate && (h.dueDate - Date.now()) < 3 * 24 * 60 * 60 * 1000).length;
+      const reservations = requests.filter(r => r.status === 'PENDING').length;
+      const fineDue = fines.filter(f => f.status === 'PENDING').reduce((acc, f) => acc + f.amount, 0);
+      return { booksBorrowed, dueSoon, reservations, fineDue };
+    } else {
+      const myActiveBorrows = history.filter(h => h.userId === currentUser.id && !h.returnDate);
+      const myDueSoon = myActiveBorrows.filter(h => (h.dueDate - Date.now()) < 3 * 24 * 60 * 60 * 1000).length;
+      const myReservations = requests.filter(r => r.userId === currentUser.id && r.status === 'PENDING').length;
+      const myFines = fines.filter(f => f.userId === currentUser.id && f.status === 'PENDING').reduce((acc, f) => acc + f.amount, 0);
+      return { booksBorrowed: myActiveBorrows.length, dueSoon: myDueSoon, reservations: myReservations, fineDue: myFines };
+    }
+  };
+
   return (
     <div className="flex flex-col lg:flex-row min-h-screen bg-transparent animate-in fade-in duration-500">
       <Sidebar
@@ -373,6 +391,7 @@ const App: React.FC = () => {
         onCloseMobile={() => setIsMobileMenuOpen(false)}
         theme={theme}
         onToggleTheme={() => setTheme(prev => prev === 'light' ? 'dark' : 'light')}
+        quickStats={calculateQuickStats()}
       />
 
       <main className="flex-1 flex flex-col min-w-0">

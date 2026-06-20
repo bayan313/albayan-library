@@ -188,53 +188,55 @@ const StudentDashboard: React.FC<StudentDashboardProps> = ({
 
             {activeTab === 'catalog' && (
                 <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                    <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
-                        <div className="flex flex-col md:flex-row gap-4 items-center flex-1 w-full">
-                            <div className="relative w-full md:w-80">
-                                <svg className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                </svg>
-                                <input
-                                    type="text" placeholder="Find your next book..."
-                                    value={search} onChange={(e) => setSearch(e.target.value)}
-                                    className="glass-input rounded-xl pl-10 pr-4 py-2.5 text-sm w-full transition-all shadow-lg"
-                                />
-                            </div>
-                            <div className="relative w-full md:w-48">
-                                <select
-                                    value={sortBy}
-                                    onChange={(e) => setSortBy(e.target.value)}
-                                    className="w-full glass-input rounded-xl px-4 py-2.5 text-xs outline-none appearance-none cursor-pointer"
-                                >
-                                    <option value="title">Sort by Title</option>
-                                    <option value="author">Sort by Author</option>
-                                    <option value="year">Sort by Newest</option>
-                                </select>
-                                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-zinc-500">
-                                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
-                                </div>
-                            </div>
-                            <div className="relative w-full md:w-48">
-                                <select
-                                    value={filter}
-                                    onChange={(e) => setFilter(e.target.value)}
-                                    className="w-full glass-input rounded-xl px-4 py-2.5 text-xs outline-none appearance-none cursor-pointer"
-                                >
-                                    {categories.map(c => (
-                                        <option key={c.name} value={c.name}>
-                                            {c.name} ({c.count})
-                                        </option>
-                                    ))}
-                                </select>
-                                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-zinc-500">
-                                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
-                                </div>
-                            </div>
-                            <button onClick={handleDownloadCatalog} className="neo-button py-3 px-8 text-[10px] font-bold uppercase tracking-[0.2em] flex items-center gap-3 transition-all whitespace-nowrap text-gray-600 hover:text-teal-600">
-                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
-                                Export Catalog
-                            </button>
+                    <h2 className="text-[11px] font-black uppercase tracking-[0.3em] text-white/60 mb-6">Recently Added Books</h2>
+                    <div className="glass-panel p-2 flex flex-col md:flex-row gap-2 items-center justify-between mb-8 rounded-2xl bg-[#1e293b]/60 border-white/10 shadow-lg">
+                        <div className="relative flex-1 w-full">
+                            <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                            <input
+                                type="text" placeholder="Search Catalog..."
+                                value={search} onChange={(e) => setSearch(e.target.value)}
+                                className="bg-transparent pl-12 pr-4 py-3 text-sm w-full outline-none text-white placeholder:text-zinc-500"
+                            />
                         </div>
+                        <div className="w-full md:w-px h-px md:h-8 bg-white/10"></div>
+                        <div className="relative w-full md:w-48 shrink-0">
+                            <select
+                                value={sortBy}
+                                onChange={(e) => setSortBy(e.target.value)}
+                                className="w-full bg-transparent px-4 py-3 text-xs outline-none appearance-none cursor-pointer text-zinc-300 font-bold"
+                            >
+                                <option value="title" className="bg-slate-800">All Formats</option>
+                                <option value="author" className="bg-slate-800">Sort by Author</option>
+                                <option value="year" className="bg-slate-800">Sort by Newest</option>
+                            </select>
+                            <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-zinc-500">
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                            </div>
+                        </div>
+                        <div className="w-full md:w-px h-px md:h-8 bg-white/10"></div>
+                        <div className="relative w-full md:w-48 shrink-0">
+                            <select
+                                value={filter}
+                                onChange={(e) => setFilter(e.target.value)}
+                                className="w-full bg-transparent px-4 py-3 text-xs outline-none appearance-none cursor-pointer text-zinc-300 font-bold"
+                            >
+                                <option value="All" className="bg-slate-800">Genre</option>
+                                {categories.filter(c => c.name !== 'All').map(c => (
+                                    <option key={c.name} value={c.name} className="bg-slate-800">
+                                        {c.name} ({c.count})
+                                    </option>
+                                ))}
+                            </select>
+                            <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-zinc-500">
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                            </div>
+                        </div>
+                        <div className="w-full md:w-px h-px md:h-8 bg-white/10"></div>
+                        <button onClick={handleDownloadCatalog} className="px-6 py-3 text-zinc-300 hover:text-teal-400 text-xs font-bold transition-all">
+                            Export
+                        </button>
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
@@ -250,54 +252,41 @@ const StudentDashboard: React.FC<StudentDashboardProps> = ({
                             const myQueuePosition = bookQueue.findIndex(r => r.userId === currentUser.id) + 1;
 
                             return (
-                                <div key={book.id} className="glass-card rounded-[2.2rem] overflow-hidden flex flex-col group hover:glass-card-hover transition-all cursor-pointer border-white/20" onClick={() => setSelectedBook(book)}>
-                                    <div className="aspect-[3/4] relative overflow-hidden bg-white/5 border-b border-white/10">
-                                        <img src={book.coverUrl} className="w-full h-full object-cover group-hover:scale-110 transition-all duration-700" alt={book.title} />
-                                        <div className="absolute top-5 left-5">
-                                            <span className="text-[8px] font-black text-teal-600 bg-white/80 backdrop-blur-md px-3 py-1.5 rounded-xl border border-white uppercase tracking-[0.2em] shadow-[0_4px_12px_rgba(0,0,0,0.06)]">
-                                                {book.category}
-                                            </span>
+                                <div key={book.id} className="glass-card rounded-3xl overflow-hidden flex flex-col group hover:-translate-y-2 hover:shadow-2xl transition-all duration-300 cursor-pointer border-white/10 bg-[#1e293b]/80" onClick={() => setSelectedBook(book)}>
+                                    {/* Top Image Section */}
+                                    <div className="h-64 relative overflow-hidden bg-zinc-900/50">
+                                        <img src={book.coverUrl} className="w-full h-full object-contain p-4 group-hover:scale-105 transition-transform duration-700 drop-shadow-2xl" alt={book.title} />
+                                        <div className="absolute top-0 right-6 w-8 h-12 bg-teal-500/80 backdrop-blur-md rounded-b-md flex items-end justify-center pb-2 shadow-lg z-10 transform origin-top rotate-12 group-hover:rotate-0 transition-transform">
+                                            <span className="text-[7px] font-black text-white uppercase -rotate-90 origin-center whitespace-nowrap tracking-widest">{book.category}</span>
                                         </div>
+                                        <div className="absolute inset-0 bg-gradient-to-t from-[#1e293b]/90 via-transparent to-transparent pointer-events-none"></div>
                                     </div>
-                                    <div className="p-7 flex flex-col flex-1">
-                                        <h4 className="font-black text-[13px] leading-snug line-clamp-2 uppercase tracking-tight">{highlightText(book.title, search)}</h4>
-                                        <p className="text-[9px] mt-2 font-black uppercase tracking-[0.15em] opacity-30">by {highlightText(book.author, search)}</p>
-
-                                        <div className="mt-8 pt-6 border-t border-gray-100/50">
-                                            <div className="flex items-center justify-between mb-2">
-                                                <p className="text-[10px] font-black text-gray-300 uppercase tracking-widest opacity-60">Inventory Status</p>
-                                                <p className="text-[10px] text-teal-600 font-black">{book.availableCopies} <span className="text-gray-300">/ {book.totalCopies}</span></p>
+                                    {/* Bottom Content Section */}
+                                    <div className="p-6 flex flex-col flex-1 relative z-10 -mt-6 rounded-t-3xl bg-[#1e293b]/40 backdrop-blur-sm border-t border-white/5">
+                                        <h4 className="font-black text-[15px] leading-tight uppercase tracking-tight text-white mb-1 line-clamp-2">{highlightText(book.title, search)}</h4>
+                                        <p className="text-[10px] font-bold text-gray-400 mb-3 line-clamp-1">Author {highlightText(book.author, search)}</p>
+                                        
+                                        <div className="flex items-center gap-2 mb-4">
+                                            <div className="flex items-center text-teal-400 gap-0.5">
+                                                {[...Array(4)].map((_, i) => (
+                                                    <svg key={i} className="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+                                                ))}
+                                                <svg className="w-3.5 h-3.5 fill-current opacity-40" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
                                             </div>
-                                            <div className="w-full h-1.5 bg-gray-100/50 rounded-full overflow-hidden border border-gray-50/50">
-                                                <div
-                                                    className={`h-full transition-all duration-1000 shadow-[0_0_8px_rgba(var(--color-rgb),0.3)] ${availabilityPercent === 0 ? 'bg-rose-400' : availabilityPercent <= 25 ? 'bg-amber-400' : 'bg-teal-400'}`}
-                                                    style={{ width: `${availabilityPercent}%` }}
-                                                />
-                                            </div>
+                                            <span className="text-[10px] text-gray-300 font-bold">4.5/5</span>
                                         </div>
 
-                                        <div className="mt-8">
-                                            {isBorrowing ? (
-                                                <div className="w-full py-4 bg-teal-500/10 text-teal-600 text-[9px] font-black uppercase tracking-[0.3em] rounded-2xl border border-teal-500/20 flex items-center justify-center gap-2">
-                                                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
-                                                    Active Asset
-                                                </div>
-                                            ) : hasRequested ? (
-                                                <div className="w-full py-4 bg-amber-500/10 text-amber-600 text-[9px] font-black uppercase tracking-[0.3em] rounded-2xl border border-amber-500/20 flex flex-col items-center justify-center shadow-[0_4px_12px_rgba(245,158,11,0.1)]">
-                                                    <span>{isTaken ? `Hold #${myQueuePosition}` : 'Hold Active'}</span>
-                                                </div>
-                                            ) : (
-                                                <button
-                                                    onClick={(e) => { e.stopPropagation(); if (!isTaken) onBorrow(book.id); }}
-                                                    className={`w-full py-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] transition-all flex items-center justify-center gap-2 shadow-sm ${isTaken
-                                                        ? 'glass-button text-red-400 border-red-500/20 cursor-not-allowed opacity-60 hover:text-red-400'
-                                                        : 'bg-teal-600 text-white hover:bg-teal-700 shadow-teal-500/10'
-                                                        }`}
-                                                    disabled={isTaken}
-                                                >
-                                                    {isTaken ? 'Unavailable' : 'Request Access'}
-                                                </button>
-                                            )}
+                                        <p className={`text-xs font-black uppercase tracking-widest mb-6 ${isTaken ? 'text-amber-500' : 'text-teal-400'}`}>
+                                            {isTaken ? 'Borrowed' : 'Available'}
+                                        </p>
+
+                                        <div className="mt-auto">
+                                            <button
+                                                onClick={(e) => { e.stopPropagation(); setSelectedBook(book); }}
+                                                className={`w-full py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-lg ${isTaken ? 'bg-zinc-800 text-white hover:bg-zinc-700' : 'bg-teal-500 hover:bg-teal-400 text-teal-950 shadow-teal-500/20'}`}
+                                            >
+                                                View Details
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
