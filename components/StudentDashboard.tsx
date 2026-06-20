@@ -239,7 +239,7 @@ const StudentDashboard: React.FC<StudentDashboardProps> = ({
                         </button>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-8">
                         {filteredBooks.map(book => {
                             const isTaken = book.availableCopies === 0;
                             const hasRequested = requests.some(r => r.userId === currentUser.id && r.bookId === book.id && r.status === 'PENDING');
