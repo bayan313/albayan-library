@@ -5,10 +5,10 @@
 :root {
   --bg-main: #f1f5f9;
   --bg-dot: #cbd5e1;
-  --glass-bg: rgba(255, 255, 255, 0.3);
-  --glass-card-bg: rgba(255, 255, 255, 0.4);
-  --glass-card-hover-bg: rgba(255, 255, 255, 0.6);
-  --glass-border: rgba(255, 255, 255, 0.5);
+  --glass-bg: rgba(255, 255, 255, 0.8);
+  --glass-card-bg: rgba(255, 255, 255, 0.85);
+  --glass-card-hover-bg: rgba(255, 255, 255, 0.95);
+  --glass-border: rgba(255, 255, 255, 0.6);
   --text-main: #0f172a;
   --text-muted: #475569;
   --shadow-color: rgba(0, 0, 0, 0.08);
@@ -19,10 +19,10 @@
 .dark {
   --bg-main: #020617;
   --bg-dot: #1e293b;
-  --glass-bg: rgba(15, 23, 42, 0.5);
-  --glass-card-bg: rgba(30, 41, 59, 0.5);
-  --glass-card-hover-bg: rgba(51, 65, 85, 0.7);
-  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-bg: rgba(15, 23, 42, 0.85);
+  --glass-card-bg: rgba(30, 41, 59, 0.85);
+  --glass-card-hover-bg: rgba(51, 65, 85, 0.95);
+  --glass-border: rgba(255, 255, 255, 0.15);
   --text-main: #f8fafc;
   --text-muted: #94a3b8;
   --shadow-color: rgba(0, 0, 0, 0.4);
@@ -53,7 +53,7 @@
     background-position: center;
     background-attachment: fixed;
     background-repeat: no-repeat;
-    filter: blur(8px) brightness(1.1);
+    filter: blur(16px) brightness(1.5);
     transform: scale(1.1);
     /* Prevent blurred edges */
     z-index: -1;
@@ -62,7 +62,7 @@
   }
 
   .dark body::before {
-    filter: blur(8px) brightness(0.3) contrast(1.2);
+    filter: blur(16px) brightness(0.3) contrast(1.2);
   }
 
   /* Smart Dark Mode Overrides */
