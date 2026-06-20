@@ -90,17 +90,17 @@ const Sidebar: React.FC<SidebarProps> = ({
                     className={({ isActive }) => `w-full flex items-center gap-4 py-3.5 px-6 transition-all duration-300 group relative
                       ${isActive
                         ? 'bg-teal-500/10 rounded-2xl border border-teal-500/20'
-                        : 'text-gray-500 hover:bg-white/40 hover:rounded-2xl'}`}
+                        : 'text-gray-500 dark:text-zinc-400 hover:bg-white/10 hover:text-gray-900 dark:hover:text-white hover:rounded-2xl'}`}
                   >
                     {({ isActive }) => (
                       <>
-                        <div className={`transition-all duration-300 ${isActive ? 'text-teal-600' : 'opacity-40 group-hover:opacity-100'}`}>
+                        <div className={`transition-all duration-300 ${isActive ? 'text-teal-600 dark:text-teal-400' : 'opacity-40 group-hover:opacity-100'}`}>
                           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={isActive ? 2 : 1.5} d={item.icon} />
                           </svg>
                         </div>
                         <span className={`text-[11px] font-black tracking-[0.15em] uppercase transition-all duration-300
-                          ${isActive ? 'text-teal-700' : 'opacity-60 group-hover:opacity-100'}`}>
+                          ${isActive ? 'text-teal-750 dark:text-teal-300' : 'opacity-60 group-hover:opacity-100 text-gray-600 dark:text-zinc-300'}`}>
                           {item.label}
                         </span>
                         {isActive && (
@@ -115,16 +115,16 @@ const Sidebar: React.FC<SidebarProps> = ({
 
             {/* QUICK STATS */}
             <div className="pt-8 border-t border-white/10 mt-4 mb-8">
-              <h4 className="text-[10px] font-black tracking-widest uppercase opacity-40 mb-4 px-2">Quick Stats</h4>
+              <h4 className="text-[10px] font-black tracking-widest uppercase opacity-40 mb-4 px-2 text-gray-900 dark:text-white">Quick Stats</h4>
               <div className="space-y-3">
                 <div className="flex items-center justify-between glass-card p-3 rounded-xl border-white/5 group hover:bg-white/5 transition-all">
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-lg bg-teal-500/10 text-teal-500 flex items-center justify-center">
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253" /></svg>
                     </div>
-                    <span className="text-[11px] font-bold text-gray-400 group-hover:text-white transition-colors">Books Borrowed</span>
+                    <span className="text-[11px] font-bold text-gray-500 dark:text-zinc-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">Books Borrowed</span>
                   </div>
-                  <span className="text-sm font-black">{quickStats.booksBorrowed}</span>
+                  <span className="text-sm font-black text-gray-900 dark:text-white">{quickStats.booksBorrowed}</span>
                 </div>
                 
                 <div className="flex items-center justify-between glass-card p-3 rounded-xl border-white/5 group hover:bg-white/5 transition-all">
@@ -132,9 +132,9 @@ const Sidebar: React.FC<SidebarProps> = ({
                     <div className="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-500 flex items-center justify-center">
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
                     </div>
-                    <span className="text-[11px] font-bold text-gray-400 group-hover:text-white transition-colors">Due Soon</span>
+                    <span className="text-[11px] font-bold text-gray-500 dark:text-zinc-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">Due Soon</span>
                   </div>
-                  <span className="text-sm font-black">{quickStats.dueSoon}</span>
+                  <span className="text-sm font-black text-gray-900 dark:text-white">{quickStats.dueSoon}</span>
                 </div>
 
                 <div className="flex items-center justify-between glass-card p-3 rounded-xl border-white/5 group hover:bg-white/5 transition-all">
@@ -142,9 +142,9 @@ const Sidebar: React.FC<SidebarProps> = ({
                     <div className="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-500 flex items-center justify-center">
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" /></svg>
                     </div>
-                    <span className="text-[11px] font-bold text-gray-400 group-hover:text-white transition-colors">Reservations</span>
+                    <span className="text-[11px] font-bold text-gray-500 dark:text-zinc-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">Reservations</span>
                   </div>
-                  <span className="text-sm font-black">{quickStats.reservations}</span>
+                  <span className="text-sm font-black text-gray-900 dark:text-white">{quickStats.reservations}</span>
                 </div>
 
                 <div className="flex items-center justify-between glass-card p-3 rounded-xl border-white/5 group hover:bg-white/5 transition-all">
@@ -152,9 +152,9 @@ const Sidebar: React.FC<SidebarProps> = ({
                     <div className="w-8 h-8 rounded-lg bg-rose-500/10 text-rose-500 flex items-center justify-center">
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 1.343-3 3s1.343 3 3 3 3-1.343 3-3-1.343-3-3-3z M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2z M12 20c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8z" /></svg>
                     </div>
-                    <span className="text-[11px] font-bold text-gray-400 group-hover:text-white transition-colors">Fine Due</span>
+                    <span className="text-[11px] font-bold text-gray-500 dark:text-zinc-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">Fine Due</span>
                   </div>
-                  <span className="text-sm font-black">₹{quickStats.fineDue.toFixed(2)}</span>
+                  <span className="text-sm font-black text-gray-900 dark:text-white">₹{quickStats.fineDue.toFixed(2)}</span>
                 </div>
               </div>
             </div>
@@ -166,12 +166,12 @@ const Sidebar: React.FC<SidebarProps> = ({
                 {user.avatarUrl ? (
                   <img src={user.avatarUrl} alt={user.name} className="w-full h-full object-cover" />
                 ) : (
-                  <span className="text-sm opacity-60">{user.name.charAt(0)}</span>
+                  <span className="text-sm opacity-60 text-gray-900 dark:text-white">{user.name.charAt(0)}</span>
                 )}
               </div>
               <div className="min-w-0">
-                <p className="text-xs font-black truncate uppercase tracking-tight leading-none">{user.name}</p>
-                <p className="text-[9px] font-bold uppercase tracking-[0.2em] mt-2 opacity-40">{role}</p>
+                <p className="text-xs font-black truncate uppercase tracking-tight leading-none text-gray-900 dark:text-white">{user.name}</p>
+                <p className="text-[9px] font-bold uppercase tracking-[0.2em] mt-2 opacity-65 text-gray-500 dark:text-zinc-400">{role}</p>
               </div>
             </div>
 
@@ -179,7 +179,7 @@ const Sidebar: React.FC<SidebarProps> = ({
               {/* Theme Toggle */}
               <button
                 onClick={onToggleTheme}
-                className="w-full flex items-center justify-between py-3.5 px-1 text-[10px] font-black uppercase tracking-[0.3em] opacity-40 hover:opacity-100 hover:text-teal-500 transition-all group"
+                className="w-full flex items-center justify-between py-3.5 px-1 text-[10px] font-black uppercase tracking-[0.3em] text-gray-500 dark:text-zinc-400 hover:text-teal-500 dark:hover:text-teal-400 transition-all group"
               >
                 <div className="flex items-center gap-3">
                   <div className={`p-1.5 rounded-lg transition-all ${theme === 'dark' ? 'bg-amber-500/10 text-amber-500' : 'bg-blue-500/10 text-blue-500'}`}>
@@ -191,13 +191,13 @@ const Sidebar: React.FC<SidebarProps> = ({
                   </div>
                   Appearance
                 </div>
-                <span className="text-[8px] font-black opacity-40">{theme}</span>
+                <span className="text-[8px] font-black opacity-60 text-gray-500 dark:text-zinc-400">{theme}</span>
               </button>
 
               <button
                 onClick={(e) => { e.preventDefault(); e.stopPropagation(); onLogout(); }}
                 type="button"
-                className="w-full flex items-center gap-3 py-3 text-[10px] font-black uppercase tracking-[0.3em] opacity-40 hover:opacity-100 hover:text-rose-500 transition-all group"
+                className="w-full flex items-center gap-3 py-3 text-[10px] font-black uppercase tracking-[0.3em] text-gray-500 dark:text-zinc-400 hover:text-rose-500 dark:hover:text-rose-400 transition-all group"
               >
                 <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />

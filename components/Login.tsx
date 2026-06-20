@@ -263,7 +263,7 @@ const Login: React.FC<LoginProps> = ({ onLogin, onIdentify, initialIdentity, onC
   if (step === 'USER_PICK' && selectedRole) {
     return (
       <div className="min-h-screen flex items-center justify-center p-6 bg-transparent relative overflow-hidden">
-        <div className="w-full max-w-2xl animate-in slide-in-from-bottom-6 duration-700 glass-panel rounded-[3.5rem] p-10 md:p-12 shadow-2xl border-white/20 flex flex-col max-h-[90vh]">
+        <div className="w-full max-w-2xl animate-in fade-in duration-500 glass-panel rounded-[3.5rem] p-10 md:p-12 shadow-2xl border-white/20 flex flex-col max-h-[90vh]">
           <div className="flex items-center justify-between mb-10 shrink-0">
             <button onClick={() => setStep('PORTAL')} className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white text-[9px] font-black uppercase tracking-[0.25em] flex items-center gap-2 transition-all group">
               <svg className="w-3.5 h-3.5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
