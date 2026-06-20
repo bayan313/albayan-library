@@ -391,7 +391,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                     <div key={req.id} className="p-6 flex items-center justify-between hover:bg-white/5 transition-colors">
                                         <div>
                                             <p className="text-sm font-bold tracking-tight">{req.userName}</p>
-                                            <p className="text-[10px] opacity-40 mt-1 uppercase font-black tracking-widest leading-none">Wants: <span className="text-teal-500">{req.bookTitle}</span></p>
+                                            <p className="text-[10px] opacity-40 mt-1 uppercase font-black tracking-widest leading-none">Wants: <span className="text-teal-500">{req.bookTitle} (#{req.bookId})</span></p>
                                         </div>
                                         <div className="flex gap-3">
                                             <button onClick={() => onHandleRequest(req.id, 'APPROVE')} className="w-9 h-9 rounded-xl glass-button flex items-center justify-center text-teal-600 hover:bg-teal-500 hover:text-white transition-all">
@@ -423,7 +423,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                     return (
                                         <div key={h.id} className="p-6 flex items-center justify-between hover:bg-white/5 transition-colors">
                                             <div className="overflow-hidden pr-4">
-                                                <p className="text-sm font-bold truncate tracking-tight">{h.bookTitle}</p>
+                                                <p className="text-sm font-bold truncate tracking-tight">{h.bookTitle} <span className="text-[10px] opacity-50 uppercase tracking-widest ml-1">(#{h.bookId})</span></p>
                                                 <div className="flex items-center gap-3 mt-1">
                                                     <p className="text-[10px] opacity-40 font-black uppercase tracking-widest leading-none">By {h.userName}</p>
                                                     <span className={`text-[9px] font-black uppercase tracking-tighter px-2 py-0.5 rounded-md border ${isOverdue ? 'bg-rose-500/10 text-rose-500 border-rose-500/20' : 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20'}`}>
@@ -536,7 +536,11 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                             <tr key={req.id} className="hover:bg-white/5 transition-all zebra-row">
                                                 <td className="px-6 py-4 opacity-40 font-mono text-[10px]">{new Date(req.timestamp).toLocaleDateString()}</td>
                                                 <td className="px-6 py-4 font-medium">{req.userName}</td>
-                                                <td className="px-6 py-4 opacity-60 text-xs">{req.bookTitle}</td>
+                                                <td className="px-6 py-4 opacity-60 text-xs">
+                                                    {req.bookTitle}
+                                                    <br />
+                                                    <span className="text-[10px] opacity-50 uppercase tracking-widest">#{req.bookId}</span>
+                                                </td>
                                                 <td className="px-6 py-4"><span className={`px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider border ${req.status === 'PENDING' ? 'accent-amber border-amber-100' : req.status === 'APPROVED' ? 'accent-emerald border-emerald-100' : 'accent-rose border-rose-100'}`}>{req.status}</span></td>
                                                 <td className="px-6 py-4 text-right">
                                                     {req.status === 'PENDING' && (
@@ -561,7 +565,11 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                             <tr key={record.id} className="hover:bg-white/5 transition-all zebra-row">
                                                 <td className="px-6 py-4 opacity-40 font-mono text-[10px]">{new Date(record.borrowDate).toLocaleDateString()}</td>
                                                 <td className="px-6 py-4 font-medium">{record.userName}</td>
-                                                <td className="px-6 py-4 opacity-60 text-xs">{record.bookTitle}</td>
+                                                <td className="px-6 py-4 opacity-60 text-xs">
+                                                    {record.bookTitle}
+                                                    <br />
+                                                    <span className="text-[10px] opacity-50 uppercase tracking-widest">#{record.bookId}</span>
+                                                </td>
                                                 <td className={`px-6 py-4 font-mono text-[10px] ${!record.returnDate && Date.now() > record.dueDate ? 'text-rose-500 font-bold' : 'opacity-40'}`}>
                                                     {record.dueDate ? new Date(record.dueDate).toLocaleDateString() : '---'}
                                                 </td>
@@ -582,7 +590,11 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                             <tr key={fine.id} className="hover:bg-white/5 transition-all zebra-row">
                                                 <td className="px-6 py-4 opacity-40 font-mono text-[10px]">{new Date(fine.timestamp).toLocaleDateString()}</td>
                                                 <td className="px-6 py-4 font-medium">{fine.userName}</td>
-                                                <td className="px-6 py-4 opacity-60 text-xs">{fine.bookTitle}</td>
+                                                <td className="px-6 py-4 opacity-60 text-xs">
+                                                    {fine.bookTitle}
+                                                    <br />
+                                                    <span className="text-[10px] opacity-50 uppercase tracking-widest">#{fine.bookId}</span>
+                                                </td>
                                                 <td className="px-6 py-4 opacity-40 text-xs">{fine.reason}</td>
                                                 <td className="px-6 py-4 text-right font-mono text-xs text-emerald-600 font-bold">₹{fine.amount}</td>
                                                 <td className="px-6 py-4"><span className={`px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider border ${fine.status === 'PAID' ? 'accent-emerald border-emerald-100' : 'accent-rose border-rose-100'}`}>{fine.status}</span></td>

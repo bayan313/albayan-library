@@ -288,13 +288,14 @@ const StudentDashboard: React.FC<StudentDashboardProps> = ({
                                                 </div>
                                             ) : (
                                                 <button
-                                                    onClick={(e) => { e.stopPropagation(); isTaken ? handleNotify(book.title) : onBorrow(book.id); }}
+                                                    onClick={(e) => { e.stopPropagation(); if (!isTaken) onBorrow(book.id); }}
                                                     className={`w-full py-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] transition-all flex items-center justify-center gap-2 shadow-sm ${isTaken
-                                                        ? 'glass-button text-gray-400 hover:text-gray-900'
+                                                        ? 'glass-button text-red-400 border-red-500/20 cursor-not-allowed opacity-60 hover:text-red-400'
                                                         : 'bg-teal-600 text-white hover:bg-teal-700 shadow-teal-500/10'
                                                         }`}
+                                                    disabled={isTaken}
                                                 >
-                                                    {isTaken ? 'Set Alert' : 'Request Access'}
+                                                    {isTaken ? 'Unavailable' : 'Request Access'}
                                                 </button>
                                             )}
                                         </div>
@@ -448,10 +449,11 @@ const StudentDashboard: React.FC<StudentDashboardProps> = ({
                             </div>
 
                             <button
-                                onClick={() => { selectedBook.availableCopies === 0 ? handleNotify(selectedBook.title) : onBorrow(selectedBook.id); setSelectedBook(null); }}
-                                className={`w-full py-5 rounded-2xl font-black uppercase text-[10px] tracking-[0.25em] transition-all shadow-xl ${selectedBook.availableCopies === 0 ? 'glass-button text-gray-400 hover:text-gray-900 border-white/60' : 'bg-teal-600 text-white hover:bg-teal-700 shadow-teal-500/20'}`}
+                                onClick={() => { if (selectedBook.availableCopies !== 0) { onBorrow(selectedBook.id); setSelectedBook(null); } }}
+                                className={`w-full py-5 rounded-2xl font-black uppercase text-[10px] tracking-[0.25em] transition-all shadow-xl ${selectedBook.availableCopies === 0 ? 'glass-button text-red-400 border-red-500/20 cursor-not-allowed opacity-60 hover:text-red-400' : 'bg-teal-600 text-white hover:bg-teal-700 shadow-teal-500/20'}`}
+                                disabled={selectedBook.availableCopies === 0}
                             >
-                                {selectedBook.availableCopies === 0 ? 'Reserve Next Copy' : 'Complete Request'}
+                                {selectedBook.availableCopies === 0 ? 'Unavailable' : 'Complete Request'}
                             </button>
                         </div>
                     </div>
