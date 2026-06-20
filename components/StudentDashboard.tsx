@@ -418,36 +418,57 @@ const StudentDashboard: React.FC<StudentDashboardProps> = ({
             )}
 
             {/* selectedBook Details Modal */}
-            {selectedBook && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-                    <div className="absolute inset-0 bg-white/20 backdrop-blur-2xl" onClick={() => setSelectedBook(null)}></div>
-                    <div className="relative w-full max-w-4xl glass-card rounded-[2.5rem] overflow-hidden flex flex-col md:flex-row max-h-[90vh] shadow-[0_32px_128px_rgba(0,0,0,0.08)] border-white/20">
-                        <div className="w-full md:w-2/5 h-72 md:h-auto bg-white/5">
-                            <img src={selectedBook.coverUrl} className="w-full h-full object-cover" />
-                        </div>
-                        <div className="flex-1 p-8 md:p-14 overflow-y-auto no-scrollbar relative">
-                            <button onClick={() => setSelectedBook(null)} className="absolute top-8 right-8 w-10 h-10 flex items-center justify-center glass-button rounded-xl opacity-40 hover:opacity-100 transition-all"><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg></button>
+            {selectedBook && (() => {
+                const isTaken = selectedBook.availableCopies === 0;
+                const hasRequested = requests.some(r => r.userId === currentUser.id && r.bookId === selectedBook.id && r.status === 'PENDING');
+                const isBorrowing = selectedBook.currentBorrowers.some(cb => cb.userId === currentUser.id);
+                const bookQueue = requests
+                    .filter(r => r.bookId === selectedBook.id && r.status === 'PENDING')
+                    .sort((a, b) => a.timestamp - b.timestamp);
+                const myQueuePosition = bookQueue.findIndex(r => r.userId === currentUser.id) + 1;
 
-                            <span className="text-[10px] font-black text-teal-600 bg-teal-500/10 px-4 py-1.5 rounded-full border border-teal-500/20 uppercase tracking-widest">{selectedBook.category}</span>
-                            <h2 className="text-4xl font-black mt-6 uppercase tracking-tight leading-none">{selectedBook.title}</h2>
-                            <p className="text-lg mt-3 font-bold uppercase tracking-wide opacity-40">by {selectedBook.author}</p>
-
-                            <div className="grid grid-cols-2 gap-10 my-10 py-8 border-y border-white/10">
-                                <div><p className="text-[10px] font-black opacity-20 uppercase tracking-widest mb-3">Identity</p><p className="text-xs font-black tracking-widest">ISBN: {selectedBook.isbn}</p><p className="text-[10px] opacity-40 font-bold tracking-widest mt-1 uppercase">ID: #{selectedBook.id}</p></div>
-                                <div><p className="text-[10px] font-black opacity-20 uppercase tracking-widest mb-3">Availability</p><p className="text-sm font-black tracking-tight">{selectedBook.availableCopies} <span className="text-[10px] opacity-40 uppercase">/ {selectedBook.totalCopies} Copies</span></p></div>
+                return (
+                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+                        <div className="absolute inset-0 bg-white/20 backdrop-blur-2xl" onClick={() => setSelectedBook(null)}></div>
+                        <div className="relative w-full max-w-4xl glass-card rounded-[2.5rem] overflow-hidden flex flex-col md:flex-row max-h-[90vh] shadow-[0_32px_128px_rgba(0,0,0,0.08)] border-white/20">
+                            <div className="w-full md:w-2/5 h-72 md:h-auto bg-white/5">
+                                <img src={selectedBook.coverUrl} className="w-full h-full object-cover" />
                             </div>
+                            <div className="flex-1 p-8 md:p-14 overflow-y-auto no-scrollbar relative">
+                                <button onClick={() => setSelectedBook(null)} className="absolute top-8 right-8 w-10 h-10 flex items-center justify-center glass-button rounded-xl opacity-40 hover:opacity-100 transition-all"><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg></button>
 
-                            <button
-                                onClick={() => { if (selectedBook.availableCopies !== 0) { onBorrow(selectedBook.id); setSelectedBook(null); } }}
-                                className={`w-full py-5 rounded-2xl font-black uppercase text-[10px] tracking-[0.25em] transition-all shadow-xl ${selectedBook.availableCopies === 0 ? 'glass-button text-red-400 border-red-500/20 cursor-not-allowed opacity-60 hover:text-red-400' : 'bg-teal-600 text-white hover:bg-teal-700 shadow-teal-500/20'}`}
-                                disabled={selectedBook.availableCopies === 0}
-                            >
-                                {selectedBook.availableCopies === 0 ? 'Unavailable' : 'Complete Request'}
-                            </button>
+                                <span className="text-[10px] font-black text-teal-600 bg-teal-500/10 px-4 py-1.5 rounded-full border border-teal-500/20 uppercase tracking-widest">{selectedBook.category}</span>
+                                <h2 className="text-4xl font-black mt-6 uppercase tracking-tight leading-none">{selectedBook.title}</h2>
+                                <p className="text-lg mt-3 font-bold uppercase tracking-wide opacity-40">by {selectedBook.author}</p>
+
+                                <div className="grid grid-cols-2 gap-10 my-10 py-8 border-y border-white/10">
+                                    <div><p className="text-[10px] font-black opacity-20 uppercase tracking-widest mb-3">Identity</p><p className="text-xs font-black tracking-widest">ISBN: {selectedBook.isbn}</p><p className="text-[10px] opacity-40 font-bold tracking-widest mt-1 uppercase">ID: #{selectedBook.id}</p></div>
+                                    <div><p className="text-[10px] font-black opacity-20 uppercase tracking-widest mb-3">Availability</p><p className="text-sm font-black tracking-tight">{selectedBook.availableCopies} <span className="text-[10px] opacity-40 uppercase">/ {selectedBook.totalCopies} Copies</span></p></div>
+                                </div>
+
+                                {isBorrowing ? (
+                                    <div className="w-full py-5 bg-teal-500/10 text-teal-600 text-[10px] font-black uppercase tracking-[0.25em] rounded-2xl border border-teal-500/20 flex items-center justify-center gap-2 cursor-not-allowed opacity-60">
+                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
+                                        Active Asset
+                                    </div>
+                                ) : hasRequested ? (
+                                    <div className="w-full py-5 bg-amber-500/10 text-amber-600 text-[10px] font-black uppercase tracking-[0.25em] rounded-2xl border border-amber-500/20 flex flex-col items-center justify-center shadow-[0_4px_12px_rgba(245,158,11,0.1)] cursor-not-allowed opacity-60">
+                                        <span>{isTaken ? `Hold #${myQueuePosition}` : 'Hold Active'}</span>
+                                    </div>
+                                ) : (
+                                    <button
+                                        onClick={() => { if (!isTaken) { onBorrow(selectedBook.id); setSelectedBook(null); } }}
+                                        className={`w-full py-5 rounded-2xl font-black uppercase text-[10px] tracking-[0.25em] transition-all shadow-xl ${isTaken ? 'glass-button text-red-400 border-red-500/20 cursor-not-allowed opacity-60 hover:text-red-400' : 'bg-teal-600 text-white hover:bg-teal-700 shadow-teal-500/20'}`}
+                                        disabled={isTaken}
+                                    >
+                                        {isTaken ? 'Unavailable' : 'Complete Request'}
+                                    </button>
+                                )}
+                            </div>
                         </div>
                     </div>
-                </div>
-            )}
+                );
+            })()}
         </div>
     );
 };
