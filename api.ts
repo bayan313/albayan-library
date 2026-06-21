@@ -153,7 +153,16 @@ class ApiService {
       method: 'POST',
       body: formData,
     });
-    if (!response.ok) throw new Error('Upload failed');
+    if (!response.ok) {
+      let errorText = 'Upload failed';
+      try {
+        const errorData = await response.json();
+        errorText = errorData.message || errorData.error || errorText;
+      } catch (e) {
+        errorText = `Upload failed with status ${response.status}`;
+      }
+      throw new Error(errorText);
+    }
     const data = await response.json();
     return data.url;
   }

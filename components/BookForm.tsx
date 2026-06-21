@@ -227,9 +227,9 @@ const BookForm: React.FC<BookFormProps> = ({ onClose, onSubmit, initialData }) =
                             setIsFetching(true);
                             const url = await import('../api').then(m => m.api.uploadImage(file));
                             setFormData({ ...formData, coverUrl: url });
-                            setStatusMsg("Visual profile synchronized successfully.");
+                            setStatusMsg("Cover artwork updated successfully.");
                           } catch (err: any) {
-                            setStatusMsg("Profile sync failure: " + err.message, 'error');
+                            setStatusMsg("Upload failed: " + err.message, 'error');
                           } finally {
                             setIsFetching(false);
                           }
