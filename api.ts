@@ -157,7 +157,7 @@ class ApiService {
       let errorText = 'Upload failed';
       try {
         const errorData = await response.json();
-        errorText = errorData.message || errorData.error || errorText;
+        errorText = errorData.error ? `Server Error: ${errorData.error}` : (errorData.message || errorText);
       } catch (e) {
         errorText = `Upload failed with status ${response.status}`;
       }
