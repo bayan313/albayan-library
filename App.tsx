@@ -69,6 +69,7 @@ const App: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    let interval: ReturnType<typeof setInterval>;
     const init = async () => {
       // Apply theme
       if (theme === 'dark') {
@@ -96,12 +97,11 @@ const App: React.FC = () => {
       }
 
       await refreshAllData();
-      const interval = setInterval(refreshAllData, 5000);
-
+      interval = setInterval(refreshAllData, 5000);
       setTimeout(() => setLoading(false), 2000);
-      return () => clearInterval(interval);
     };
     init();
+    return () => { if (interval) clearInterval(interval); };
   }, [refreshAllData]);
 
   const handleIdentify = (identity: { id: string, name: string, avatarUrl?: string }) => {

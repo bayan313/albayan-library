@@ -79,8 +79,10 @@ const historySchema = new mongoose.Schema({
   userId: { type: String, required: true },
   userName: String,
   borrowDate: { type: Number, default: Date.now },
+  dueDate: { type: Number, default: null },
   returnDate: Number,
-  issuedBy: String
+  issuedBy: String,
+  renewals: { type: Number, default: 0 }
 });
 
 const fineSchema = new mongoose.Schema({
@@ -100,9 +102,6 @@ const User = mongoose.model('User', userSchema);
 const BorrowRequest = mongoose.model('BorrowRequest', requestSchema);
 const History = mongoose.model('History', historySchema);
 const Fine = mongoose.model('Fine', fineSchema);
-
-// --- Admin Config ---
-const ADMIN_EMAILS = ['admin@484', 'admin@albayan.edu'];
 
 // --- API Routes ---
 
@@ -230,7 +229,14 @@ app.post('/api/history', async (req, res) => {
 });
 
 app.patch('/api/history/:id', async (req, res) => {
-  try { const record = await History.findOneAndUpdate({ id: req.params.id }, { returnDate: req.body.returnDate }, { new: true }); res.json(record); } catch (err) { res.status(400).json({ message: err.message }); }
+  try {
+    const updateFields = {};
+    if (req.body.returnDate !== undefined) updateFields.returnDate = req.body.returnDate;
+    if (req.body.dueDate !== undefined) updateFields.dueDate = req.body.dueDate;
+    if (req.body.renewals !== undefined) updateFields.renewals = req.body.renewals;
+    const record = await History.findOneAndUpdate({ id: req.params.id }, { $set: updateFields }, { new: true });
+    res.json(record);
+  } catch (err) { res.status(400).json({ message: err.message }); }
 });
 
 app.delete('/api/history', async (req, res) => {

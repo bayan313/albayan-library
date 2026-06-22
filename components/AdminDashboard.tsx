@@ -303,7 +303,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </div>
             )}
 
-            {activeTab !== 'dashboard' && (
+            {activeTab !== 'dashboard' && activeTab !== 'delete-panel' && (
                 <div className="flex flex-col md:flex-row gap-6 items-center justify-between mb-10 pb-8 border-b border-white/40">
                     <div className="flex gap-4 items-center w-full md:w-auto flex-1">
                         <div className="relative w-full md:w-80 lg:w-[28rem]">
