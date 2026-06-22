@@ -93,6 +93,11 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
     const [issuingToUserId, setIssuingToUserId] = useState('');
     const [issueSearch, setIssueSearch] = useState('');
 
+    // Delete Panel State
+    const [deleteSearchText, setDeleteSearchText] = useState('');
+    const [deletePanelConfirmBook, setDeletePanelConfirmBook] = useState<Book | null>(null);
+    const [deletePanelInput, setDeletePanelInput] = useState('');
+
     // Inline Status Message logic moved to App.tsx (globalStatus)
     const statusMsg = globalStatus.msg;
     const setStatusMsg = globalStatus.set;
@@ -362,6 +367,58 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
             {activeTab === 'analytics' && (
                 <AnalyticsDashboard books={books} history={history} users={users} fines={fines} />
             )}
+
+            {activeTab === 'delete-panel' && (() => {
+                const deletePanelBooks = deleteSearchText.trim() === '' ? [] : books.filter(b => b.title.toLowerCase().includes(deleteSearchText.toLowerCase()) || b.id.toLowerCase().includes(deleteSearchText.toLowerCase()));
+                return (
+                    <div className="space-y-6 animate-in fade-in duration-700">
+                        <div className="glass-card rounded-[3rem] p-10 border-white/20">
+                            <div className="mb-8">
+                                <h2 className="text-3xl font-black uppercase tracking-tighter text-rose-500">Delete Panel</h2>
+                                <p className="text-[10px] font-black uppercase tracking-[0.4em] mt-3 opacity-40">Secure Book Deletion</p>
+                            </div>
+                            
+                            <div className="relative group mb-8">
+                                <svg className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-300 group-focus-within:text-rose-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                                <input
+                                    type="text"
+                                    placeholder="Search by Book Title or ID to reveal..."
+                                    value={deleteSearchText}
+                                    onChange={(e) => setDeleteSearchText(e.target.value)}
+                                    className="w-full glass-input rounded-[2.5rem] py-5 pl-16 pr-8 text-sm outline-none transition-all font-black placeholder:opacity-40 border-white/10 focus:border-rose-500/30"
+                                />
+                            </div>
+
+                            {deleteSearchText.trim() === '' ? (
+                                <div className="p-20 text-center">
+                                    <p className="text-[10px] font-black uppercase tracking-[0.5em] opacity-40">Awaiting search query</p>
+                                </div>
+                            ) : deletePanelBooks.length === 0 ? (
+                                <div className="p-20 text-center">
+                                    <p className="text-[10px] font-black uppercase tracking-[0.5em] opacity-40">No matching books found</p>
+                                </div>
+                            ) : (
+                                <div className="space-y-3">
+                                    {deletePanelBooks.map(book => (
+                                        <div key={book.id} className="glass-panel p-6 rounded-3xl flex items-center justify-between border-white/10 hover:bg-rose-500/5 transition-colors">
+                                            <div>
+                                                <p className="text-lg font-black tracking-tight">{book.title}</p>
+                                                <p className="text-[10px] uppercase font-bold tracking-widest opacity-40 mt-1">ID: {book.id} • {book.author}</p>
+                                            </div>
+                                            <button 
+                                                onClick={() => setDeletePanelConfirmBook(book)}
+                                                className="px-6 py-3 rounded-xl bg-rose-500/10 text-rose-600 font-black text-[10px] uppercase tracking-widest hover:bg-rose-500 hover:text-white transition-all shadow-sm"
+                                            >
+                                                Delete
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                );
+            })()}
 
             {/* Dashboard Content */}
             {activeTab === 'dashboard' && (
@@ -787,6 +844,64 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                     <button onClick={() => { setEditingBook(selectedBookDetail); setShowBookForm(true); setSelectedBookDetail(null); }} className="flex-1 py-5 glass-button text-gray-400 font-black uppercase text-[10px] tracking-[0.25em] rounded-2xl hover:text-teal-600 border-white/60">Modify Metadata</button>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {deletePanelConfirmBook && (
+                <div className="fixed inset-0 bg-gray-900/60 backdrop-blur-xl z-[100] flex items-center justify-center p-4 animate-in fade-in zoom-in-95 duration-300">
+                    <div className="bg-white rounded-[3rem] p-10 max-w-lg w-full shadow-2xl relative overflow-hidden">
+                        <div className="absolute top-0 left-0 right-0 h-2 bg-rose-500" />
+                        
+                        <div className="w-16 h-16 rounded-2xl bg-rose-500/10 text-rose-500 flex items-center justify-center mb-6">
+                            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                        </div>
+                        
+                        <h3 className="text-2xl font-black uppercase tracking-tight text-gray-900 mb-2">Delete Confirmation</h3>
+                        <p className="text-sm font-medium text-gray-500 mb-8">
+                            Are you absolutely sure? This action cannot be undone. To proceed, please type <span className="font-black text-gray-900 bg-gray-100 px-2 py-1 rounded">{deletePanelConfirmBook.title}</span> below.
+                        </p>
+                        
+                        <input
+                            type="text"
+                            placeholder="Type the exact book title here..."
+                            value={deletePanelInput}
+                            onChange={(e) => setDeletePanelInput(e.target.value)}
+                            onPaste={(e) => e.preventDefault()}
+                            autoFocus
+                            className="w-full bg-gray-50 border-2 border-gray-100 rounded-2xl py-4 px-6 text-sm font-bold outline-none focus:border-rose-500 transition-colors mb-8"
+                        />
+                        
+                        <div className="flex gap-4">
+                            <button
+                                onClick={() => {
+                                    setDeletePanelConfirmBook(null);
+                                    setDeletePanelInput('');
+                                }}
+                                className="flex-1 py-4 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-2xl font-black uppercase text-[10px] tracking-widest transition-colors"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={() => {
+                                    if (deletePanelInput === deletePanelConfirmBook.title) {
+                                        onDeleteBook(deletePanelConfirmBook.id);
+                                        setStatusMsg(`Deleted: ${deletePanelConfirmBook.title}`, 'success');
+                                        setDeletePanelConfirmBook(null);
+                                        setDeletePanelInput('');
+                                        setDeleteSearchText('');
+                                    }
+                                }}
+                                disabled={deletePanelInput !== deletePanelConfirmBook.title}
+                                className={`flex-1 py-4 rounded-2xl font-black uppercase text-[10px] tracking-widest transition-all ${
+                                    deletePanelInput === deletePanelConfirmBook.title 
+                                        ? 'bg-rose-500 text-white shadow-xl shadow-rose-500/20 hover:bg-rose-600' 
+                                        : 'bg-rose-500/50 text-white/50 cursor-not-allowed'
+                                }`}
+                            >
+                                Confirm Delete
+                            </button>
                         </div>
                     </div>
                 </div>
