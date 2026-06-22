@@ -45,7 +45,7 @@ npm start
 ## 🔐 Admin Access
 To access the Master Admin portal:
 1. Go to the **Manual Login** section.
-2. Enter the Master ID: `admin@484`
+2. Enter the Master ID: `admin@123`
 3. Select the **Administrator** portal.
 
 ## 📄 License
