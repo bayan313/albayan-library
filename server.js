@@ -30,11 +30,24 @@ app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 // MongoDB Connection
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/albayan_library';
 
-mongoose.connect(MONGODB_URI)
+const mongooseOptions = {
+  serverSelectionTimeoutMS: 5000, // Keep trying to send operations for 5 seconds
+  socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
+};
+
+mongoose.connect(MONGODB_URI, mongooseOptions)
   .then(() => {
     console.log('MongoDB Connected Successfully');
   })
   .catch(err => console.error('MongoDB Connection Error:', err));
+
+mongoose.connection.on('disconnected', () => {
+  console.log('MongoDB disconnected. Attempting to reconnect...');
+});
+
+mongoose.connection.on('error', (err) => {
+  console.error('MongoDB connection error:', err);
+});
 
 // --- Schemas ---
 const bookSchema = new mongoose.Schema({
