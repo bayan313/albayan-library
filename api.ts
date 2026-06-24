@@ -3,8 +3,9 @@ import { Book, User, BorrowRequest, HistoryRecord, Fine } from './types';
 
 // Detect environment and set base URL
 const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-const API_BASE_URL = (import.meta as any).env?.VITE_API_URL ||
-  (isLocalhost ? 'http://localhost:5000/api' : '/api');
+const API_BASE_URL = isLocalhost 
+  ? 'http://localhost:5000/api' 
+  : 'https://albayan-library.onrender.com/api';
 
 class ApiService {
   private useLocalStorageFallback = false;
